@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSDMAN Activation Key Generator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #003366;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[readonly] {
+            background-color: #e9e9e9;
+            cursor: not-allowed;
+        }
+        .copy-button {
+            width: auto;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            .form-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>License Key Generator</h1>
+        <label for="hwid">HWID:</label>
+        <input type="text" id="hwid" name="hwid">
+        <label for="year">Year:</label>
+        <select id="year" name="year">
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30">30</option>
+        </select>
+        <button onclick="generateKey()">Generate Key</button>
+        <label for="key">Generated Key:</label>
+        <input type="text" id="key" name="key" readonly>
+        <button class="copy-button" onclick="copyKey()">Copy Key</button>
+    </div>
+    <script>
+        async function generateKey() {
+            const hwid = document.getElementById('hwid').value.trim();
+            const year = document.getElementById('year').value;
+            if (!hwid) {
+                alert('Please enter an HWID.');
+                return;
+            }
+            try {
+                const response = await fetch('/generate-key', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ hwid, year })
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to generate key');
+                }
+                const data = await response.json();
+                document.getElementById('key').value = data.key;
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        function copyKey() {
+            const key = document.getElementById('key').value;
+            navigator.clipboard.writeText(key).then(() => {
+                alert('Key copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy key');
+            });
+        }
+    </script>
+</body>
+</html>
